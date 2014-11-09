@@ -27,13 +27,7 @@ int main()
             break;
         }
         
-        for(i = 1; overhang[i] < input; i++)
-        {
-#ifndef ONLINE_JUDGE
-            cout << "overhang[" << i << "] = " << overhang[i] << endl;
-#endif
-        }
-        
+        for(i = 1; overhang[i] < input; i++);
         cout << i << " card(s)" << endl;
     }
 
