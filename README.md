@@ -1,4 +1,6 @@
-225-review
-==========
+Programming Problems
+====================
 
-Ruby implementations of common sorting and graph-related algorithms
+Solutions to problems and algorithm implementations in preparation for the 
+ACM ICPC. Folders are sorted by site: POJ is Peking Online Judge.
+
