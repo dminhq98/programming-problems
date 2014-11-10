@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cp boilerplate.cpp $1
-vim $1
+cp boilerplate.cpp POJ$1.cpp
+vim POJ$1.cpp
 
