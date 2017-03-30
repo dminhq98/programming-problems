@@ -3,7 +3,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class MinSpanTree {
 
@@ -70,16 +72,27 @@ public class MinSpanTree {
 		}
 	}
 
-	public static void main(String[] args) {
-		Scanner s = new Scanner(System.in);
-
+    static BufferedReader IN = new BufferedReader(
+			new InputStreamReader(System.in));
+	static StringTokenizer ST;
+    static String next() throws Exception {
+        while (!ST.hasMoreTokens()) ST = new StringTokenizer(IN.readLine());
+        return ST.nextToken();
+    }
+    
+    static int nextInt() throws Exception {
+        return( Integer.parseInt(next()) );
+    }
+    
+	public static void main(String[] args) throws Exception {
+		ST = new StringTokenizer(IN.readLine());
 		Vertex V[] = new Vertex[20000];
 		Edge mst[] = new Edge[19999];
 		Edge E[] = new Edge[30000];
 		Comparator<Edge> c = new Lexicographic();
 		while (true) {
-			int n = s.nextInt();
-			int m = s.nextInt();
+			int n = nextInt();
+			int m = nextInt();
 			if (n == 0 && m == 0) break;
 
 			if (m == 0) {
@@ -92,9 +105,9 @@ public class MinSpanTree {
 			}
 
 			for (int i = 0; i < m; i++) {
-				int a = s.nextInt();
-				int b = s.nextInt();
-				int w = s.nextInt();
+				int a = nextInt();
+				int b = nextInt();
+				int w = nextInt();
 
 				E[i] = new Edge(a, b, w);
 			}
@@ -119,9 +132,11 @@ public class MinSpanTree {
 
 			System.out.println(sumCost);
 			Arrays.sort(mst, 0, n-1, c);
+			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < n-1; i++) {
-				System.out.println(mst[i]);
+				sb.append(mst[i]).append('\n');
 			}
+			System.out.print(sb.toString());
 		}
 	}
 }
