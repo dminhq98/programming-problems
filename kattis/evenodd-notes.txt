@@ -1,0 +1,402 @@
+Computing f(x)
+--------------
+
+Examining a number x to reason what f(x) will be is easy enough: it will be shifted right as many times as the highest set bit, plus incremented some number of times related to the grouping of set bits in the number. However, designing any kind of if-else ladder to calculate this will inevitably be slower than simply executing f(x) to get the count directly.
+
+Note that the modulo operator % compiles to the division operation, which is slower than bit shifting and masking operations. Instead of checking divisibility by two as (x % 2 == 0), instead test the lowest bit: ((x & 0x01) == 0). Similarly, don't do division as (x = x/2). Do instead (x = x >> 1). (A good compiler might compile (x = x/2) to (x = x >> 1) anyway).
+
+Finding a Pattern
+-----------------
+
+Any odd number, as its first step in f(x), will be incremented to the even number one greater than it. For example, (f(11) = f(12) + 1). So, to calculate a range, we can skip all the odd numbers, then double the result and add 1 to calculate a pair of numbers. 
+
+Applying this strategy, can we generalize further? 
+
+Below is a table of the first 16 numbers in our sequence:
+ x  :f(x)
+0001: 0
+0010: 1
+0011: 3
+0100: 2
+0101: 5
+0110: 4
+0111: 4
+1000: 3
+1001: 7
+1010: 6
+1011: 6
+1100: 5
+1101: 6
+1110: 5
+1111: 5
+10000: 4
+
+Notice how there is already a pattern developing. To further illustrate, here are the next 16 numbers (in hex rather than binary):
+
+x : f(x)
+11: 9
+12: 8
+13: 8
+14: 7
+15: 8
+16: 7
+17: 7
+18: 6
+19: 8
+1a: 7
+1b: 7
+1c: 6
+1d: 7
+1e: 6
+1f: 6
+20: 5
+
+There is a pattern of 4 numbers. Grouped with parentheses: (9,8,8,7), (8,7,7,6), (8,7,7,6), (7,6,6,5). 
+
+The next 32:
+
+x : f(x)
+21: 11
+22: 10
+23: 10
+24: 9
+25: 10
+26: 9
+27: 9
+28: 8
+29: 10
+2a: 9
+2b: 9
+2c: 8
+2d: 9
+2e: 8
+2f: 8
+30: 7
+31: 10
+32: 9
+33: 9
+34: 8
+35: 9
+36: 8
+37: 8
+38: 7
+39: 9
+3a: 8
+3b: 8
+3c: 7
+3d: 8
+3e: 7
+3f: 7
+40: 6
+
+Again, groups follow the pattern (11,10,10,9), (10,9,9,8), (10,9,9,8), (9,8,8,7), then (10,9,9,8), (9,8,8,7), (9,8,8,7), (8,7,7,6). This pattern holds at least until 0xff.
+
+So we have this repeating pattern of 4 groups of 4. The first number of the one starting at 0x11 is 9, at 0x21 is 11, and at 0x31 is 10. Another table:
+
+x : f(x)
+11: 9
+21: 11
+31: 10
+41: 13
+51: 12
+61: 12
+71: 11
+81: 15
+91: 14
+a1: 14
+b1: 13
+c1: 14
+d1: 13
+e1: 13
+f1: 12
+101: 17
+111: 16
+121: 16
+131: 15
+141: 16
+151: 15
+161: 15
+171: 14
+181: 16
+191: 15
+1a1: 15
+1b1: 14
+1c1: 15
+1d1: 14
+1e1: 14
+1f1: 13
+201: 19
+211: 18
+221: 18
+231: 17
+241: 18
+251: 17
+261: 17
+271: 16
+281: 18
+291: 17
+2a1: 17
+2b1: 16
+2c1: 17
+2d1: 16
+2e1: 16
+2f1: 15
+301: 18
+311: 17
+321: 17
+331: 16
+341: 17
+351: 16
+361: 16
+371: 15
+381: 17
+391: 16
+3a1: 16
+3b1: 15
+3c1: 16
+3d1: 15
+3e1: 15
+3f1: 14
+401: 21
+411: 20
+421: 20
+431: 19
+441: 20
+451: 19
+461: 19
+471: 18
+481: 20
+491: 19
+4a1: 19
+4b1: 18
+4c1: 19
+4d1: 18
+4e1: 18
+4f1: 17
+501: 20
+511: 19
+521: 19
+531: 18
+541: 19
+551: 18
+561: 18
+571: 17
+581: 19
+591: 18
+5a1: 18
+5b1: 17
+5c1: 18
+5d1: 17
+5e1: 17
+5f1: 16
+601: 20
+611: 19
+621: 19
+631: 18
+641: 19
+651: 18
+661: 18
+671: 17
+681: 19
+691: 18
+6a1: 18
+6b1: 17
+6c1: 18
+6d1: 17
+6e1: 17
+6f1: 16
+701: 19
+711: 18
+721: 18
+731: 17
+741: 18
+751: 17
+761: 17
+771: 16
+781: 18
+791: 17
+7a1: 17
+7b1: 16
+7c1: 17
+7d1: 16
+7e1: 16
+7f1: 15
+801: 23
+811: 22
+821: 22
+831: 21
+841: 22
+851: 21
+861: 21
+871: 20
+881: 22
+891: 21
+8a1: 21
+8b1: 20
+8c1: 21
+8d1: 20
+8e1: 20
+8f1: 19
+901: 22
+911: 21
+921: 21
+931: 20
+941: 21
+951: 20
+961: 20
+971: 19
+981: 21
+991: 20
+9a1: 20
+9b1: 19
+9c1: 20
+9d1: 19
+9e1: 19
+9f1: 18
+a01: 22
+a11: 21
+a21: 21
+a31: 20
+a41: 21
+a51: 20
+a61: 20
+a71: 19
+a81: 21
+a91: 20
+aa1: 20
+ab1: 19
+ac1: 20
+ad1: 19
+ae1: 19
+af1: 18
+b01: 21
+b11: 20
+b21: 20
+b31: 19
+b41: 20
+b51: 19
+b61: 19
+b71: 18
+b81: 20
+b91: 19
+ba1: 19
+bb1: 18
+bc1: 19
+bd1: 18
+be1: 18
+bf1: 17
+c01: 22
+c11: 21
+c21: 21
+c31: 20
+c41: 21
+c51: 20
+c61: 20
+c71: 19
+c81: 21
+c91: 20
+ca1: 20
+cb1: 19
+cc1: 20
+cd1: 19
+ce1: 19
+cf1: 18
+d01: 21
+d11: 20
+d21: 20
+d31: 19
+d41: 20
+d51: 19
+d61: 19
+d71: 18
+d81: 20
+d91: 19
+da1: 19
+db1: 18
+dc1: 19
+dd1: 18
+de1: 18
+df1: 17
+e01: 21
+e11: 20
+e21: 20
+e31: 19
+e41: 20
+e51: 19
+e61: 19
+e71: 18
+e81: 20
+e91: 19
+ea1: 19
+eb1: 18
+ec1: 19
+ed1: 18
+ee1: 18
+ef1: 17
+f01: 20
+f11: 19
+f21: 19
+f31: 18
+f41: 19
+f51: 18
+f61: 18
+f71: 17
+f81: 19
+f91: 18
+fa1: 18
+fb1: 17
+fc1: 18
+fd1: 17
+fe1: 17
+ff1: 16
+
+So, apart from a little weirdness at the beginning, it seems we have a pattern among numbers ending with 0x1 as well, with local maxima found at numbers ending with 0x01. Let's look at just those:
+
+x  : f(x)
+101: 17
+201: 19
+301: 18
+401: 21
+501: 20
+601: 20
+701: 19
+801: 23
+901: 22
+a01: 22
+b01: 21
+c01: 22
+d01: 21
+e01: 21
+f01: 20
+
+Again, a little weirdness at the beginning, then the same pattern emerges. Note how the "weirdness" is also patterned: it is always the same weirdness.
+
+ x  : f(x)
+0002: 1
+0003: 3
+0004: 2
+0005: 5
+...
+0011: 9
+0021: 11
+0031: 10
+0041: 13
+...
+0101: 17
+0201: 19
+0301: 18
+0401: 21
+...
+1001: 25
+2001: 27
+3001: 26
+4001: 29
+...
+10001: 33
+
+Note how every decimal place seems to increase the base number by 8: we see 1-3-2-5 (base 0), then 9-11-10-13 (base 8), then 17-19-18-21 (base 16), then 25-27-26-29 (base 24), then 33-35-34-37 (base 32). Now we have the entire pattern. So how do we sum it efficiently?
+
+Efficient Summation Over Ranges
+-------------------------------
+
+????
